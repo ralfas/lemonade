@@ -11,7 +11,9 @@ Lemonade uses S3 and Twilio.
 
 # Privacy
 
-Lemonade creates Signed URLs for accessing the message stored in S3, so only Twilio has access to it.
+Lemonade uses Signed URLs to give Twilio access to the message stored in S3, so only Twilio has access to it.
+
+Also, the messages stored in S3 are created with a short expiry.
 
 # Costs
 
