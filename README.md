@@ -1,4 +1,4 @@
-Lemonade
+Lemonade [![Build Status](https://travis-ci.org/ralfas/lemonade.png?branch=master)](https://travis-ci.org/ralfas/lemonade)
 ========
 
 # Intro
