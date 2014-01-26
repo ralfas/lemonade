@@ -73,16 +73,20 @@ func TestGenerateTwilML(t *testing.T) {
 }
 
 // TODO
+// https://api.twilio.com
 func TestMakeCall(t *testing.T) {
 
 	tests := []struct {
-		APIPath   string
-		From      string
-		To        string
-		TwilMLURL url.URL
+		APIPath string
+		From    string
+		To      string
+		Url     string
 	}{
-		{"", "", "", url.URL{}},
+		{"/2010-04-01/Accounts/7788678767/Calls", "+0202020202", "+10101010101", "https://example.com/signedURLgoesHere"},
+		{"/2010-04-01/Accounts/123123123/Calls", "+0303030495", "+45905059544", "http://www.example2.com/signedURLgoesHere"},
 	}
+
+	testsRun := 0
 
 	for testIndex, test := range tests {
 
@@ -90,11 +94,26 @@ func TestMakeCall(t *testing.T) {
 			if request.URL.Path != test.APIPath {
 				t.Errorf("%d. Request path => %q, expected => %q", testIndex, request.URL.Path, test.APIPath)
 			}
+			if request.FormValue("From") != test.From {
+				t.Errorf("%d. 'From' value => %q, expected => %q", testIndex, request.FormValue("From"), test.From)
+			}
+			if request.FormValue("To") != test.To {
+				t.Errorf("%d. 'To' value => %q, expected => %q", testIndex, request.FormValue("To"), test.To)
+			}
+			if request.FormValue("Url") != test.Url {
+				t.Errorf("%d. 'Url' value => %q, expected => %q", testIndex, request.FormValue("Url"), test.Url)
+			}
+			testsRun += 1
 		}))
 		defer testServer.Close()
 
-		apiURL := url.URL{Host: testServer.URL, Path: test.APIPath}
+		APIUrl, _ := url.Parse(testServer.URL)
+		APIUrl.Path = test.APIPath
 
-		makeCall(apiURL, test.From, test.To, test.TwilMLURL)
+		makeCall(APIUrl.String(), test.From, test.To, test.Url)
+	}
+
+	if testsRun != cap(tests) {
+		t.Errorf("Tests run => %d, expected => %d", testsRun, cap(tests))
 	}
 }

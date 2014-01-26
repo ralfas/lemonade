@@ -37,8 +37,14 @@ func generateTwilML(message string) (twilML string) {
 	return strings.Join([]string{prefix, message, suffix}, "")
 }
 
-func makeCall(apiURL url.URL, fromPhone string, toPhone string, twilMLURL url.URL) {
+func makeCall(apiURL string, fromPhone string, toPhone string, twilMLURL string) {
 
+	data := url.Values{}
+	data.Add("From", fromPhone)
+	data.Add("To", toPhone)
+	data.Add("Url", twilMLURL)
+
+	http.PostForm(apiURL, data)
 }
 
 func main() {
