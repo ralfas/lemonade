@@ -1,6 +1,7 @@
 package main
 
 import (
+	"net"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -10,19 +11,19 @@ import (
 func TestCreateListener(t *testing.T) {
 
 	tests := []struct {
-		Port            string
-		ExpectedAddress string
+		Port string
 	}{
-		{"8080", "0.0.0.0:8080"},
-		{"8082", "0.0.0.0:8082"},
+		{"8080"},
+		{"8082"},
 	}
 
 	for testIndex, test := range tests {
 
 		listener := createListener(test.Port)
 
-		if listener.Addr().String() != test.ExpectedAddress {
-			t.Errorf("%d. Network address returned => %q, expected => %q", testIndex, listener.Addr().String(), test.ExpectedAddress)
+		_, listenerPort, _ := net.SplitHostPort(listener.Addr().String())
+		if listenerPort != test.Port {
+			t.Errorf("%d. Network address returned => %q, expected => %q", testIndex, listenerPort, test.Port)
 		}
 	}
 }
